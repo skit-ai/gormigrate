@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/jinzhu/gorm"
+	"github.com/misterEggroll/gorm"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
