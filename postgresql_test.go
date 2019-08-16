@@ -3,7 +3,7 @@
 package gormigrate
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/Vernacular-ai/gorm/dialects/postgres"
 )
 
 func init() {

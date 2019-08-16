@@ -3,7 +3,7 @@
 package gormigrate
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	_ "github.com/Vernacular-ai/gorm/dialects/sqlite"
 )
 
 func init() {

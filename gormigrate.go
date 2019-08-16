@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/misterEggroll/gorm"
+	"github.com/Vernacular-ai/gorm"
 )
 
 const (

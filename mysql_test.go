@@ -3,7 +3,7 @@
 package gormigrate
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/Vernacular-ai/gorm/dialects/mysql"
 )
 
 func init() {
