@@ -3,6 +3,7 @@ package gormigrate
 import (
 	"errors"
 	"fmt"
+	e "github.com/Vernacular-ai/errors"
 	"os"
 	"testing"
 
@@ -243,13 +244,18 @@ func TestInitSchemaExistingMigrations(t *testing.T) {
 	})
 }
 
+func errorify(err error) error {
+	// Convert errors with stacktraces into errors without
+	return errors.New(e.DeepestCause(err).Error())
+}
+
 func TestMigrationIDDoesNotExist(t *testing.T) {
 	forEachDatabase(t, func(db *gorm.DB) {
 		m := New(db, DefaultOptions, migrations)
-		assert.Equal(t, ErrMigrationIDDoesNotExist, m.MigrateTo("1234"))
-		assert.Equal(t, ErrMigrationIDDoesNotExist, m.RollbackTo("1234"))
-		assert.Equal(t, ErrMigrationIDDoesNotExist, m.MigrateTo(""))
-		assert.Equal(t, ErrMigrationIDDoesNotExist, m.RollbackTo(""))
+		assert.Equal(t, errorify(ErrMigrationIDDoesNotExist()), errorify(m.MigrateTo("1234")))
+		assert.Equal(t, errorify(ErrMigrationIDDoesNotExist()), errorify(m.RollbackTo("1234")))
+		assert.Equal(t, errorify(ErrMigrationIDDoesNotExist()), errorify(m.MigrateTo("")))
+		assert.Equal(t, errorify(ErrMigrationIDDoesNotExist()), errorify(m.RollbackTo("")))
 	})
 }
 
@@ -264,7 +270,7 @@ func TestMissingID(t *testing.T) {
 		}
 
 		m := New(db, DefaultOptions, migrationsMissingID)
-		assert.Equal(t, ErrMissingID, m.Migrate())
+		assert.Equal(t, errorify(ErrMissingID()), errorify(e.DeepestCause(m.Migrate())))
 	})
 }
 
@@ -280,8 +286,7 @@ func TestReservedID(t *testing.T) {
 		}
 
 		m := New(db, DefaultOptions, migrationsReservedID)
-		_, isReservedIDError := m.Migrate().(*ReservedIDError)
-		assert.True(t, isReservedIDError)
+		assert.Equal(t, errorify(ReservedIDError("SCHEMA_INIT")), errorify(m.Migrate()))
 	})
 }
 
@@ -303,8 +308,7 @@ func TestDuplicatedID(t *testing.T) {
 		}
 
 		m := New(db, DefaultOptions, migrationsDuplicatedID)
-		_, isDuplicatedIDError := m.Migrate().(*DuplicatedIDError)
-		assert.True(t, isDuplicatedIDError)
+		assert.Equal(t, errorify(DuplicatedIDError("201705061500")), errorify(m.Migrate()))
 	})
 }
 
@@ -313,13 +317,13 @@ func TestEmptyMigrationList(t *testing.T) {
 		t.Run("with empty list", func(t *testing.T) {
 			m := New(db, DefaultOptions, []*Migration{})
 			err := m.Migrate()
-			assert.Equal(t, ErrNoMigrationDefined, err)
+			assert.Equal(t, errorify(ErrNoMigrationDefined()), errorify(err))
 		})
 
 		t.Run("with nil list", func(t *testing.T) {
 			m := New(db, DefaultOptions, nil)
 			err := m.Migrate()
-			assert.Equal(t, ErrNoMigrationDefined, err)
+			assert.Equal(t, errorify(ErrNoMigrationDefined()), errorify(err))
 		})
 	})
 }
@@ -378,7 +382,7 @@ func TestUnexpectedMigrationEnabled(t *testing.T) {
 		// Try with fewer migrations. Should fail as we see a migration in the db that
 		// we don't recognise any more
 		n := New(db, DefaultOptions, migrations[:1])
-		assert.Equal(t, ErrUnknownPastMigration, n.Migrate())
+		assert.Equal(t, errorify(ErrUnknownPastMigration()), errorify(n.Migrate()))
 	})
 }
 
