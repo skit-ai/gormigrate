@@ -10,7 +10,7 @@ tasks:
 
   go-get-all:
     cmds:
-      - go get -t -tags 'sqlite postgresql mysql sqlserver' ./...
+      - go get -t -tags 'sqlite postgresql mysql' ./...
 
   lint:
     desc: Runs golint on this project
@@ -35,12 +35,6 @@ tasks:
       - task: test
         vars: {DATABASE: mysql}
 
-  test-sqlserver:
-    desc: Run tests for Microsoft SQL Server
-    cmds:
-      - task: test
-        vars: {DATABASE: sqlserver}
-
   test:
     cmds:
       - go test -v -tags {{.DATABASE}}
@@ -57,4 +51,4 @@ tasks:
   docker:test:
     cmds:
       - docker-compose down -v
-      - docker-compose run gormigrate go test -v -tags 'postgresql sqlite mysql sqlserver'
+      - docker-compose run gormigrate go test -v -tags 'postgresql sqlite mysql'

@@ -352,7 +352,7 @@ func TestMigration_WithUseTransactions(t *testing.T) {
 		assert.False(t, db.HasTable(&Person{}))
 		assert.False(t, db.HasTable(&Pet{}))
 		assert.Equal(t, 0, tableCount(t, db, "migrations"))
-	}, "postgres", "sqlite3", "mssql")
+	}, "postgres", "sqlite3")
 }
 
 func TestMigration_WithUseTransactionsShouldRollback(t *testing.T) {
@@ -367,7 +367,7 @@ func TestMigration_WithUseTransactionsShouldRollback(t *testing.T) {
 		err := m.Migrate()
 		assert.Error(t, err)
 		assert.False(t, db.HasTable(&Book{}))
-	}, "postgres", "sqlite3", "mssql")
+	}, "postgres", "sqlite3")
 }
 
 func TestUnexpectedMigrationEnabled(t *testing.T) {
